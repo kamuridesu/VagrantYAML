@@ -1,0 +1,1 @@
+echo "i'm worker" >> worker.ok
