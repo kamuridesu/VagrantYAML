@@ -25,11 +25,11 @@ You'll need a file containing the configs of your machines, like:
 ```
 
 Where:
-    - Name: is the name of the VM
-    - CPU: number of CPU cores
-    - MEMORY: memory of the VMs
-    - TYPE: type of the machine (worker, master)
-    - IP: IP address of the machine
+  - Name: is the name of the VM
+  - CPU: number of CPU cores
+  - MEMORY: memory of the VMs
+  - TYPE: type of the machine (worker, master)
+  - IP: IP address of the machine
 
 And the .sh config files for each type of machine.
 
