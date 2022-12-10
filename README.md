@@ -5,6 +5,7 @@ Vagrant config file that reads a YAML file with the machines configuration.
 ## Requirements:
 
 [Vagrant](https://developer.hashicorp.com/vagrant/downloads)
+[Virtualbox](https://www.virtualbox.org/wiki/Downloads)
 
 ## Setup
 
