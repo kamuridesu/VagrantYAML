@@ -15,7 +15,7 @@ else
   abort "ERROR: Expecting a configuration file!"
 end
 
-INVENTORY = YAML.load_file(ENV['INV_FILE'])
+INVENTORY = YAML.load_file(File.join(File.dirname(__FILE__), ENV['INV_FILE']))
 
 ["NAME", "CPU", "MEMORY", "IP", "TYPE"].each do |key|
     INVENTORY.each_with_index do |config, idx|
