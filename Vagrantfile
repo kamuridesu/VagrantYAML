@@ -4,32 +4,43 @@
 require 'yaml'
 require 'pathname'
 
-DEFAULT_IMAGE = "debian/buster64"
+default_image = "debian/buster64"
 
-if ENV['INV_FILE'] != nil then
-  file = Pathname.new(ENV['INV_FILE'])
-  if ! file.exist? then
+file = ENV['INV_FILE']
+
+if file != nil then
+  if ! Pathname.new(file).exist? then
     abort "ERROR: file \"#{file}\" does not exists!"
   end
 else
   abort "ERROR: Expecting a configuration file!"
 end
 
-INVENTORY = YAML.load_file(File.join(File.dirname(__FILE__), ENV['INV_FILE']))
+INVENTORY = YAML.load_file(File.join(File.dirname(__FILE__), file))
 
+if (!INVENTORY.has_key?("MACHINES")) && (!INVENTORY.has_key?("MACHINES".to_sym))
+  abort "ERROR: Missing MACHINES parameter!"
+end
+if ((INVENTORY.has_key?("IMAGE")) || (INVENTORY.has_key?("IMAGE".to_sym))) && INVENTORY['IMAGE'] != "" && INVENTORY['IMAGE'] != nil
+  default_image = INVENTORY['IMAGE']
+else
+  puts "WARNING: Using default #{default_image} because no IMAGE was set in the inventory file!"
+end
 ["NAME", "CPU", "MEMORY", "IP", "TYPE"].each do |key|
-    INVENTORY.each_with_index do |config, idx|
-        if (!config.has_key?(key)) && (!config.has_key?(key.to_sym))
-            abort "ERROR: Missing parameter \"#{key}\" on the machine number #{idx + 1} of the inventory file!"
-        end
+  INVENTORY['MACHINES'].each_with_index do |conf, idk|
+    if (!conf.has_key?(key)) && (!conf.has_key?(key.to_sym))
+      abort "ERROR: Missing parameter \"#{key}\" on the machine number #{idx + 1} of the inventory file!"
     end
+  end
 end
 
+MACHINES = INVENTORY['MACHINES']
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = DEFAULT_IMAGE
-  INVENTORY.each do |virtualmachines|
+  config.vm.box = default_image
+  config.vm.synced_folder ".", "/vagrant"
+  MACHINES.each do |virtualmachines|
     config.vm.define virtualmachines["NAME"] do |box|
 
       box.vm.box_check_update = false
@@ -45,11 +56,10 @@ Vagrant.configure("2") do |config|
       end
 
       if virtualmachines["TYPE"] == "master" then
-        box.vm.provision "shell", path: "master.sh"
+        box.vm.provision "shell", path: "configs/shell/provision_master.sh"
       elsif virtualmachines["TYPE"] == "worker" then
-        box.vm.provision "shell", path: "worker.sh"
+        box.vm.provision "shell", path: "configs/shell/provision_worker.sh"
       end
-
     end
   end
 end

@@ -13,21 +13,25 @@ Vagrant config file that reads a YAML file with the machines configuration.
 You'll need a file containing the configs of your machines, like:
 
 ```YAML
-- NAME: "master01"
-  CPU: "2"
-  MEMORY: "2000"
-  TYPE: "master"
-  IP: 10.0.1.100
+IMAGE: "debian/buster64"
+MACHINES:
+  - NAME: "master01"
+    CPU: "2"
+    MEMORY: "2000"
+    TYPE: "master"
+    IP: 10.0.1.100
 
-- NAME: "worker01"
-  CPU: "2"
-  MEMORY: "2000"
-  TYPE: "worker"
-  IP: 10.0.1.101
+  - NAME: "worker01"
+    CPU: "2"
+    MEMORY: "2000"
+    TYPE: "worker"
+    IP: 10.0.1.101
 ```
 
 Where:
-  - Name: is the name of the VM
+  - IMAGE: Image to be used by the VMs
+  - MACHINES: List with the machines to be configured
+  - NAME: is the name of the VM
   - CPU: number of CPU cores
   - MEMORY: memory of the VMs
   - TYPE: type of the machine (worker, master)
