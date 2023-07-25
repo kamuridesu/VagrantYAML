@@ -4,6 +4,8 @@
 require 'yaml'
 require 'pathname'
 
+puts "https://github.com/kamuridesu/VagrantYAML"
+
 default_image = "debian/buster64"
 
 file = ENV['INV_FILE']
@@ -13,7 +15,10 @@ if file != nil then
     abort "ERROR: file \"#{file}\" does not exists!"
   end
 else
-  abort "ERROR: Expecting a configuration file!"
+  if ! Pathname.new("vagrant.yml").exist? then
+    abort "ERROR: Expecting a configuration file!"
+  end
+  file = "vagrant.yml"
 end
 
 INVENTORY = YAML.load_file(File.join(File.dirname(__FILE__), file))
