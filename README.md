@@ -13,19 +13,23 @@ Vagrant config file that reads a YAML file with the machines configuration.
 You'll need a file containing the configs of your machines, like:
 
 ```YAML
-IMAGE: "debian/buster64"
+IMAGE: "debian/bullseye64"
 MACHINES:
   - NAME: "master01"
     CPU: "2"
-    MEMORY: "2000"
+    MEMORY: "4000"
     TYPE: "master"
     IP: 10.0.1.100
+    SSH_PUB_KEY_FILE: /home/user/.ssh/id_rsa.pub # optional
+    SCRIPT: master.sh # optional
 
   - NAME: "worker01"
     CPU: "2"
     MEMORY: "2000"
     TYPE: "worker"
     IP: 10.0.1.101
+    SSH_PUB_KEY_FILE: /home/user/.ssh/id_rsa.pub # optional
+    SCRIPT: worker.sh # optional
 ```
 
 Where:
@@ -36,8 +40,9 @@ Where:
   - MEMORY: memory of the VMs
   - TYPE: type of the machine (worker, master)
   - IP: IP address of the machine
+  - SCRIPT: (Optional) Script to provision the vm
+  - SSH_PUB_KEY_FILE: (Optional) path for SSH Public Key
 
-And the .sh config files for each type of machine.
 
 You can check this repo to find examples.
 
