@@ -31,8 +31,8 @@ if ((INVENTORY.has_key?("IMAGE")) || (INVENTORY.has_key?("IMAGE".to_sym))) && IN
 else
   puts "WARNING: Using default #{default_image} because no IMAGE was set in the inventory file!"
 end
-["NAME", "CPU", "MEMORY", "IP", "TYPE"].each do |key|
-  INVENTORY['MACHINES'].each_with_index do |conf, idk|
+["NAME", "CPU", "MEMORY", "IP"].each do |key|
+  INVENTORY['MACHINES'].each_with_index do |conf, idx|
     if (!conf.has_key?(key)) && (!conf.has_key?(key.to_sym))
       abort "ERROR: Missing parameter \"#{key}\" on the machine number #{idx + 1} of the inventory file!"
     end
