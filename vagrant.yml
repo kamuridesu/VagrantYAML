@@ -1,4 +1,6 @@
 IMAGE: "debian/bullseye64"
+RSYNC_EXCLUDE:
+  - cli.sh
 MACHINES:
   - NAME: "master01"
     CPU: "2"

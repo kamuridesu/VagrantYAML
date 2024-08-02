@@ -4,11 +4,13 @@
 require 'yaml'
 require 'pathname'
 
-puts "https://github.com/kamuridesu/VagrantYAML"
+STDERR.puts "https://github.com/kamuridesu/VagrantYAML"
 
 default_image = "debian/buster64"
 
 file = ENV['INV_FILE']
+
+USERNAME = Gem.win_platform? ? "#{ENV['USERNAME']}" : "#{ENV['USER']}"
 
 if file != nil then
   if ! Pathname.new(file).exist? then
@@ -22,6 +24,12 @@ else
 end
 
 INVENTORY = YAML.load_file(File.join(File.dirname(__FILE__), file))
+
+rsync_exclude = []
+
+if (INVENTORY.has_key?("RSYNC_EXCLUDE")) && (INVENTORY.has_key?("RSYNC_EXCLUDE".to_sym))
+  rsync_exclude = INVENTORY['RSYNC_EXCLUDE']
+end
 
 if (!INVENTORY.has_key?("MACHINES")) && (!INVENTORY.has_key?("MACHINES".to_sym))
   abort "ERROR: Missing MACHINES parameter!"
@@ -55,7 +63,7 @@ Vagrant.configure("2") do |config|
       box.vm.hostname = virtualmachines["NAME"]
 
       box.vm.synced_folder ".", "/vagrant", type: "rsync",
-        rsync__exclude: [".git/", "data/", "data/*", "data/**", "data/postgres"]
+        rsync__exclude: [".git/"] + rsync_exclude
 
       box.vm.provider "virtualbox" do |vb|
         vb.memory = virtualmachines["MEMORY"]
@@ -68,7 +76,7 @@ Vagrant.configure("2") do |config|
 
       if (virtualmachines.has_key?("SSH_PUB_KEY_FILE")) then
         box.vm.provision "shell" do |s|
-          ssh_pub_key = File.readlines(virtualmachines["SSH_PUB_KEY_FILE"]).first.strip()
+          ssh_pub_key = File.readlines(virtualmachines["SSH_PUB_KEY_FILE"].sub! '$USER', USERNAME).first.strip()
           s.inline = <<-SHELL
             mkdir -p /home/vagrant/.ssh/
             mkdir -p /root/.ssh/
