@@ -1,19 +1,18 @@
-IMAGE: "debian/bullseye64"
+IMAGE: "debian/bookworm64"
+
 RSYNC_EXCLUDE:
   - cli.sh
+
 MACHINES:
   - NAME: "master01"
     CPU: "2"
-    MEMORY: "4000"
-    TYPE: "master"
+    MEMORY: "2000"
     IP: 10.0.1.100
-    SSH_PUB_KEY_FILE: /home/user/.ssh/id_rsa.pub
-    SCRIPT: master.sh
-
+    SSH_PUB_KEY_FILE: /home/$USER/.ssh/id_rsa.pub
+    SCRIPT: "master.sh"
   - NAME: "worker01"
     CPU: "2"
     MEMORY: "2000"
-    TYPE: "worker"
     IP: 10.0.1.101
-    SSH_PUB_KEY_FILE: /home/user/.ssh/id_rsa.pub
-    SCRIPT: worker.sh
+    SSH_PUB_KEY_FILE: /home/$USER/.ssh/id_rsa.pub
+    SCRIPT: "worker.sh"
